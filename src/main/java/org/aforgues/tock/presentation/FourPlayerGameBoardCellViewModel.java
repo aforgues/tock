@@ -23,11 +23,11 @@ public class FourPlayerGameBoardCellViewModel {
         return "";
     }
 
-    public String getPawnImageSource() {
+    public String getPawnCssClass() {
         if (! hasEmptyHole && holePawnColor != null) {
-            return "/images/hole-with-" + holePawnColor.toLowerCase() + "-pawn"
-                    + (isPawnStake ? "-stake" : "")
-                    + ".png";
+            return "dot "
+                    + holePawnColor.toLowerCase()
+                    + (isPawnStake ? " stake" : "");
         }
         return "";
     }

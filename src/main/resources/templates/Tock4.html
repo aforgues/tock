@@ -3,31 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <title>Tock à 4 joueurs</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        .dot-wrapper {
+            width: 36px;
+            height: 36px;
+            background: url(/images/nohole.png) no-repeat 0 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .dot-wrapper .dot {
+            height: 75%;
+            width: 75%;
+        }
+        .dot {
+            position:relative;
+            width: 23px;
+            height: 23px;
+            background-color: grey;
+            border-radius: 50%;
+            border: 1px solid transparent;
+            display: inline-block;
+        }
+        .dot.red {
+            background-color: #9c2436;
+        }
+        .dot.blue {
+            background-color: #1c21f2;
+        }
+        .dot.yellow {
+            background-color: #fcf853;
+        }
+
+        .dot.green {
+            background-color: #30663d;
+        }
+
+        .dot.active {
+            border: 2px solid black;
+        }
+
+        .dot.stake:after {
+            content: "o";
+            position:absolute;
+            top:auto;
+            left:0;
+            width:100%;
+            text-align: center;
+            line-height: 1.6;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        table {
+            margin: 0;
+            padding: 0;
+            border-spacing: 0;
+        }
+        tr {
+            line-height: 0;
+        }
+        td {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
 </head>
 <body>
     <h1>
         C'est au tour de jouer des <span th:text="${currentPlayerPawnColor}" />
     </h1>
-    <table style="border-spacing: 0px; border-collapse: collapse">
-        <tr th:each="row : ${gameBoardRows}" style="line-height: 0">
-            <td th:each="cell : ${row.getCells()}" style="border: 0px;padding: 0px;width: 36px;height: 36px">
+    <table>
+        <tr th:each="row : ${gameBoardRows}">
+            <td th:each="cell : ${row.getCells()}">
                 <span th:if="${cell.isCenter()}">
                     <img th:src="${cell.getCenterImageSource()}" width="36" height="36" />
                 </span>
-                <span th:unless="${cell.isCenter()}">
-                    <span th:if="${cell.isHasHole()}">
-                        <span th:if="${cell.isHasEmptyHole()}">
-                            <img src="/images/emptyhole.png" width="36" height="36" />
-                        </span>
-                        <span th:unless="${cell.isHasEmptyHole()}">
-                            <img th:src="${cell.getPawnImageSource()}"
-                                 width="36" height="36"
-                                 th:alt-title="${cell.getPawnPlayerTitle()}"
-                                 th:onclick="'selectPawn(this, \''+ ${cell.isPawnPlayable()} +'\')'" />
-                        </span>
-                    </span>
-                    <span th:unless="${cell.isHasHole()}">
-                        <img src="/images/nohole.png" width="36" height="36" />
+                <span th:unless="${cell.isCenter()}" class="dot-wrapper">
+                    <span th:if="${cell.isHasHole() && cell.isHasEmptyHole()}" class="dot"></span>
+                    <span th:if="${cell.isHasHole() && ! cell.isHasEmptyHole()}"
+                          th:class="${cell.getPawnCssClass()}"
+                          th:alt-title="${cell.getPawnPlayerTitle()}"
+                          th:onclick="'togglePawn(this, \''+ ${cell.isPawnPlayable()} +'\')'">
                     </span>
                 </span>
             </td>
@@ -35,9 +94,14 @@
     </table>
 
     <script type="text/javascript">
-        function selectPawn(element, isPlayable) {
+        function togglePawn(element, isPlayable) {
             if (isPlayable == 'true') {
-                element.src = "/images/nohole.png";
+                if (element.className.endsWith("active")) {
+                    element.className = element.className.substring(0, element.className.indexOf("active"));
+                }
+                else {
+                    element.className = element.className + " active";
+                }
             }
             else
                 return false;
