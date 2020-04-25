@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+.dot-wrapper {
+	width: 40px;
+	height: 40px;
+	background: url(bg-rectangle.png) no-repeat 0 50%;
+	display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.dot-wrapper .dot {
+	height: 65%;
+  width: 65%;
+}
+.dot {
+  position:relative;
+  width: 23px;
+  height: 23px;
+  background-color: #bbb;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  display: inline-block;
+}
+.dot.red {
+  background-color: #9c2436;
+}
+.dot.blue {
+  background-color: #1c21f2;
+}
+.dot.yellow {
+  background-color: #fcf853;
+}
+
+.dot.green {
+  background-color: #30663d;
+}
+
+.dot.active {
+  border-color: #ec0323;
+}
+
+.dot.disable:after {
+  content: "x";
+  position:absolute;
+  top:auto;
+  left:0;
+  width:100%;
+  text-align: center;
+  line-height: 1.25;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+table {
+	margin: 0;
+	padding: 0;
+}
+td {
+	margin: 0;
+	padding: 0;
+}
+</style>
+</head>
+<body>
+
+<div style="text-align:center">
+	<span class="dot active"></span>
+	<span class="dot disable green"></span>
+	<span class="dot blue"></span>
+	<span class="dot red"></span>
+	<span class="dot yellow"></span>
+</div>
+
+<table>
+	<tr>
+		<td>
+			<span class="dot-wrapper">
+		  	<span class="dot active"></span>
+		  </span>
+		</td>
+		<td>
+			<span class="dot-wrapper">
+		  	<span class="dot disable green"></span>
+		  </span>
+		</td>
+		<td>
+			<span class="dot-wrapper">
+		  	<span class="dot blue"></span>
+		  </span>
+		</td>
+		<td>
+			<span class="dot-wrapper">
+		  	<span class="dot red"></span>
+		  </span>
+		</td>
+		<td>
+			<span class="dot-wrapper">
+		  	<span class="dot yellow"></span>
+		  </span>
+		</td>
+	</tr>
+</table>
+
+<div>
+  <span class="dot-wrapper">
+  	<span class="dot active"></span>
+  </span>
+  
+  <span class="dot-wrapper">
+  	<span class="dot disable green"></span>
+  </span>
+
+  <span class="dot-wrapper">
+  	<span class="dot blue"></span>
+  </span>
+
+  <span class="dot-wrapper">
+  	<span class="dot red"></span>
+  </span>
+
+  <span class="dot-wrapper">
+  	<span class="dot yellow"></span>
+  </span>
+</div>
+
+</body>
+</html> 

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Tock à 4 joueurs</title>
+</head>
+<body>
+    <h1>
+        C'est au tour de jouer des <span th:text="${currentPlayerPawnColor}" />
+    </h1>
+    <table style="border-spacing: 0px; border-collapse: collapse">
+        <tr th:each="row : ${gameBoardRows}" style="line-height: 0">
+            <td th:each="cell : ${row.getCells()}" style="border: 0px;padding: 0px;width: 36px;height: 36px">
+                <span th:if="${cell.isCenter()}">
+                    <img th:src="${cell.getCenterImageSource()}" width="36" height="36" />
+                </span>
+                <span th:unless="${cell.isCenter()}">
+                    <span th:if="${cell.isHasHole()}">
+                        <span th:if="${cell.isHasEmptyHole()}">
+                            <img src="/images/emptyhole.png" width="36" height="36" />
+                        </span>
+                        <span th:unless="${cell.isHasEmptyHole()}">
+                            <img th:src="${cell.getPawnImageSource()}"
+                                 width="36" height="36"
+                                 th:alt-title="${cell.getPawnPlayerTitle()}"
+                                 th:onclick="'selectPawn(this, \''+ ${cell.isPawnPlayable()} +'\')'" />
+                        </span>
+                    </span>
+                    <span th:unless="${cell.isHasHole()}">
+                        <img src="/images/nohole.png" width="36" height="36" />
+                    </span>
+                </span>
+            </td>
+        </tr>
+    </table>
+
+    <script type="text/javascript">
+        function selectPawn(element, isPlayable) {
+            if (isPlayable == 'true') {
+                element.src = "/images/nohole.png";
+            }
+            else
+                return false;
+        }
+    </script>
+</body>
+</html>
