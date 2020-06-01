@@ -13,8 +13,9 @@ public class GameRepository {
 
     public String save(Game game) {
         UUID id = UUID.randomUUID();
-        gameMap.put(id.toString(), game);
-        return id.toString();
+        game.setGameId(id.toString());
+        gameMap.put(game.getGameId(), game);
+        return game.getGameId();
     }
 
     public Map<String, Game> mapByKey() {

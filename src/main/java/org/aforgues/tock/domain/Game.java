@@ -1,6 +1,9 @@
 package org.aforgues.tock.domain;
 
+import lombok.Data;
+import lombok.Generated;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collection;
@@ -10,6 +13,10 @@ import java.util.TreeSet;
 
 @Slf4j
 public class Game {
+    @Getter
+    @Setter
+    private String gameId;
+
     @Getter
     private GameType type;
 

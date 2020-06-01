@@ -8,8 +8,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.*;
 
 @Controller
@@ -34,58 +36,70 @@ public class GameController {
     @GetMapping("/games/{id}")
     public String details(@PathVariable String id, Model model) {
         Game game = gameService.findByKey(id);
-        buildModelAndReturnTemplateFourPlayer(model, game);
-        return "Tock4";
-    }
-
-    @GetMapping("/games/{id}/players/current/start")
-    public String currentPlayerStart(@PathVariable String id, Model model) {
-        Game game = gameService.currentPlayerStart(id);
-        buildModelAndReturnTemplateFourPlayer(model, game);
-        return "Tock4";
+        buildModelGameBoard(model, game);
+        initModelForms(model, id);
+        return "game";
     }
 
     @GetMapping("/games/{id}/players/{overallRank}/start")
     public String playerStart(@PathVariable String id, @PathVariable int overallRank, Model model) {
         Game game = gameService.playerStart(id, overallRank);
-        buildModelAndReturnTemplateFourPlayer(model, game);
-        return "Tock4";
-    }
-
-    @GetMapping("/games/{gameId}/players/current/pawns/{pawnNumber}/move/{moveCount}")
-    public String moveCurrentPlayerPawnTo(@PathVariable String gameId, @PathVariable int pawnNumber, @PathVariable int moveCount, Model model) {
-        Game game = gameService.moveCurrentPlayerPawnTo(gameId, pawnNumber, moveCount);
-        buildModelAndReturnTemplateFourPlayer(model, game);
-        return "Tock4";
+        buildModelGameBoard(model, game);
+        return "game";
     }
 
     @GetMapping("/games/{gameId}/players/{overallRank}/pawns/{pawnNumber}/move/{moveCount}")
     public String movePlayerPawnTo(@PathVariable String gameId, @PathVariable int overallRank,
                                    @PathVariable int pawnNumber, @PathVariable int moveCount, Model model) {
         Game game = gameService.movePlayerPawnTo(gameId, overallRank, pawnNumber, moveCount);
-        buildModelAndReturnTemplateFourPlayer(model, game);
-        return "Tock4";
-    }
-
-    @GetMapping("/games/{gameId}/players/current/pawns/{pawnNumber}/switch/{targetPawnPosition}")
-    public String switchPlayerPawnWith(@PathVariable String gameId, @PathVariable int pawnNumber, @PathVariable int targetPawnPosition, Model model) {
-        Game game = gameService.switchCurrentPlayerPawnWith(gameId, pawnNumber, targetPawnPosition);
-        buildModelAndReturnTemplateFourPlayer(model, game);
-        return "Tock4";
+        buildModelGameBoard(model, game);
+        return "game";
     }
 
     @GetMapping("/games/{gameId}/players/{overallRank}/pawns/{pawnNumber}/switch/{targetPawnPosition}")
     public String switchPlayerPawnWith(@PathVariable String gameId, @PathVariable int overallRank,
                                    @PathVariable int pawnNumber, @PathVariable int targetPawnPosition, Model model) {
         Game game = gameService.switchPlayerPawnWith(gameId, overallRank, pawnNumber, targetPawnPosition);
-        buildModelAndReturnTemplateFourPlayer(model, game);
-        return "Tock4";
+        buildModelGameBoard(model, game);
+        return "game";
     }
 
-    private void buildModelAndReturnTemplateFourPlayer(Model model, Game game) {
+    @PostMapping("/play")
+    public String formPlay(@Valid @ModelAttribute ("playRequest") GamePlayRequest gamePlayRequest,
+                           BindingResult errors, Model model) {
+        if (errors.hasErrors()) {
+            buildModelGameBoard(model, gameService.findByKey(gamePlayRequest.getGameId()));
+            return "game";
+        }
+
+        String gameId = gamePlayRequest.getGameId();
+        Card card = gamePlayRequest.getCard();
+        Integer pawnNumber = gamePlayRequest.getPawnNumber();
+        Integer targetPosition = gamePlayRequest.getTargetPosition();
+
+        try {
+            gameService.playCurrentPlayer(gameId, card, pawnNumber, targetPosition);
+        }
+        catch (IllegalPawnMoveException e) {
+            errors.reject("illegal_pawn_move","Déplacement impossible (" + e.getMessage() + ")");
+            log.warn("Illegal Pawn Move : " + e.getMessage());
+            buildModelGameBoard(model, gameService.findByKey(gameId));
+            return "game";
+        }
+        return "redirect:/games/" + gameId;
+    }
+
+    private void buildModelGameBoard(Model model, Game game) {
         if (game != null) {
             model.addAttribute("currentPlayerPawnColor", game.getCurrentPlayer().getPawnsColor());
             model.addAttribute("gameBoardRows", buildViewModel(game));
+        }
+    }
+
+    private void initModelForms(Model model, String gameId) {
+        if (gameId != null) {
+            model.addAttribute("gameId", gameId);
+            model.addAttribute("playRequest", new GamePlayRequest(gameId));
         }
     }
 
@@ -113,6 +127,7 @@ public class GameController {
                     fourPlayerGameBoardCellViewModel.setHasHole(true);
 
                     Hole hole = gameBoard.getHoleByPosition(position.get());
+                    fourPlayerGameBoardCellViewModel.setHolePositionCode(HoleType.REGULAR.name() + "-" + hole.getPosition());
                     if (hole.isFree()) {
                         fourPlayerGameBoardCellViewModel.setHasEmptyHole(true);
                     }
@@ -133,14 +148,17 @@ public class GameController {
 
                     FourPlayerHomeHoleDisplayMapping.HomeHoleData homeHoleData = positionHome.get();
                     Hole homeHole;
+                    Player player = game.getPlayerByOverallRank(homeHoleData.getPlayerRank());
                     if (homeHoleData.getHoleType() == HoleType.HOME_START) {
-                        homeHole = gameBoard.getStartHomeHoleByPlayerAndPosition(game.getPlayerByOverallRank(homeHoleData.getPlayerRank()),
-                                homeHoleData.getHolePosition());
+                        homeHole = gameBoard.getStartHomeHoleByPlayerAndPosition(player, homeHoleData.getHolePosition());
                     }
                     else {
-                        homeHole = gameBoard.getFinishHomeHoleByPlayerAndPosition(game.getPlayerByOverallRank(homeHoleData.getPlayerRank()),
-                                homeHoleData.getHolePosition());
+                        homeHole = gameBoard.getFinishHomeHoleByPlayerAndPosition(player, homeHoleData.getHolePosition());
                     }
+
+                    fourPlayerGameBoardCellViewModel.setHolePositionCode(homeHole.getType().name() + "-"
+                                                                        + player.getPawnsColor() + "-"
+                                                                        + homeHole.getPosition());
                     if (homeHole.isFree()) {
                         fourPlayerGameBoardCellViewModel.setHasEmptyHole(true);
                     }

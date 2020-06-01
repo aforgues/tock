@@ -1,5 +1,6 @@
 package org.aforgues.tock.service;
 
+import org.aforgues.tock.domain.Card;
 import org.aforgues.tock.domain.Game;
 import org.aforgues.tock.domain.GameType;
 import org.aforgues.tock.domain.Player;
@@ -28,14 +29,6 @@ public class GameService {
         return gameRepository.findByKey(id);
     }
 
-    public Game currentPlayerStart(String id) {
-        Game game = findByKey(id);
-        game.getCurrentPlayer().start();
-        game.nextPlayer();
-        return game;
-    }
-
-    // TODO : remove and keep only currentPlayerStart method
     public Game playerStart(String id, int playerOverallRank) {
         Game game = findByKey(id);
         Player player = game.getPlayerByOverallRank(playerOverallRank);
@@ -43,14 +36,6 @@ public class GameService {
         return game;
     }
 
-    public Game moveCurrentPlayerPawnTo(String gameId, int pawnNumber, int moveCount) {
-        Game game = findByKey(gameId);
-        game.getCurrentPlayer().movePawnTo(pawnNumber, moveCount);
-        game.nextPlayer();
-        return game;
-    }
-
-    // TODO : remove and keep only moveCurrentPlayerPawnTo method
     public Game movePlayerPawnTo(String gameId, int overallRank, int pawnNumber, int moveCount) {
         Game game = findByKey(gameId);
         Player player = game.getPlayerByOverallRank(overallRank);
@@ -58,18 +43,31 @@ public class GameService {
         return game;
     }
 
-    public Game switchCurrentPlayerPawnWith(String gameId, int pawnNumber, int targetPawnPosition) {
-        Game game = findByKey(gameId);
-        game.getCurrentPlayer().switchPawns(pawnNumber, targetPawnPosition);
-        game.nextPlayer();
-        return game;
-    }
-
-    // TODO : remove and keep only switchCurrentPlayerPawnWith method
     public Game switchPlayerPawnWith(String gameId, int overallRank, int pawnNumber, int targetPawnPosition) {
         Game game = findByKey(gameId);
         Player player = game.getPlayerByOverallRank(overallRank);
         player.switchPawns(pawnNumber, targetPawnPosition);
+        return game;
+    }
+
+    public Game playCurrentPlayer(String gameId, Card card, Integer pawnNumber, Integer targetPosition) {
+        Game game = findByKey(gameId);
+        Player currentPlayer = game.getCurrentPlayer();
+
+        if (card.isCanSwitch()) {
+            currentPlayer.switchPawns(pawnNumber, targetPosition);
+        }
+        else if (card.isCanStart() &&
+                currentPlayer.getPawn(pawnNumber).isAtHome()) {
+            currentPlayer.start(pawnNumber);
+        }
+        else {
+            // TODO : check targetPosition match with card moveCount
+            currentPlayer.movePawnTo(pawnNumber, card.getMoveCount());
+        }
+        // TODO : add canSplit behavior
+
+        game.nextPlayer();
         return game;
     }
 }

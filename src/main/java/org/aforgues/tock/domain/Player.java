@@ -86,6 +86,11 @@ public class Player implements Comparable<Player> {
         }
     }
 
+    public void start(int pawnNumber) {
+        Pawn pawn = getPawn(pawnNumber);
+        pawn.start();
+    }
+
     private List<Pawn> getPawnsStillInHome() {
         return List.of(getFirst(), getSecond(), getThird(), getFourth())
                 .stream()
@@ -93,7 +98,7 @@ public class Player implements Comparable<Player> {
                 .collect(Collectors.toList());
     }
 
-    private Pawn getPawn(int playerPawnNumber) {
+    public Pawn getPawn(int playerPawnNumber) {
         Pawn pawn;
         switch (playerPawnNumber) {
             case 1:

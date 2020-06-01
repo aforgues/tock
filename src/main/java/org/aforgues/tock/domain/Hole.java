@@ -30,6 +30,8 @@ public class Hole implements Comparable<Hole> {
         switch (type) {
             case STAKE_ELIGIBLE:
             case HOME_ENTRANCE:
+            case HOME_START:
+            case HOME_FINISH:
                 this.associatedPlayer = associatedPlayer;
                 break;
             default:

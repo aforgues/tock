@@ -2,6 +2,7 @@ package org.aforgues.tock.presentation;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.aforgues.tock.domain.HoleType;
 
 @NoArgsConstructor
 @Data
@@ -14,11 +15,13 @@ public class FourPlayerGameBoardCellViewModel {
     private boolean isPawnPlayable;
     private boolean isCenter;
     private int imageCenterNumber;
+    private String holePositionCode;
 
     public String getPawnPlayerTitle() {
         if (! hasEmptyHole) {
             return "Pawn number " + holePawnPlayerNumber
-                    + (isPawnPlayable ? " (playable)" : "");
+                    + (isPawnPlayable ? " (playable)" : "")
+                    + " - position " + getHolePositionCode();
         }
         return "";
     }
@@ -28,6 +31,13 @@ public class FourPlayerGameBoardCellViewModel {
             return "dot "
                     + holePawnColor.toLowerCase()
                     + (isPawnStake ? " stake" : "");
+        }
+        return "";
+    }
+
+    public String getTargetPawnPosition() {
+        if (holePositionCode != null && holePositionCode.startsWith(HoleType.REGULAR.name())) {
+            return holePositionCode.substring(holePositionCode.lastIndexOf("-")+1);
         }
         return "";
     }

@@ -296,6 +296,24 @@ public class GameIntegrationTest {
     }
 
     @Test
+    void shouldThrowExceptionWhenSwitchingPawnWithCurrentPlayerPawnNotInTheGame() {
+        // Given
+        Player currentPlayer = game4P.firstPlayer();
+        int pawnNumber = currentPlayer.start();
+        currentPlayer.movePawnTo(pawnNumber, -4);
+
+        Player otherPlayer = game4P.lastPlayer();
+
+        // When
+        final int targetSwitchPawnPosition = 68; // first player switchable pawn position
+        Exception exception = Assertions.assertThrows(IllegalPawnMoveException.class, () -> otherPlayer.switchPawns(1, targetSwitchPawnPosition));
+
+        // Then
+        Assertions.assertNotNull(exception);
+        Assertions.assertEquals("Pawn::switchWithPawnAt : current player pawn must be in the game => actual position : " + HoleType.HOME_START, exception.getMessage());
+    }
+
+    @Test
     void shouldSwitchPawnsWhenConditionsAreMet() {
         // Given
         Player currentPlayer = game4P.firstPlayer();
@@ -330,5 +348,57 @@ public class GameIntegrationTest {
 
         // Then
         Assertions.assertEquals(68, hole.getPosition());
+    }
+
+    @Test
+    void shouldThrowExceptionWhenMovePawn4PositionBehindWithCurrentPlayerPawnInFinishHome() {
+        // Given
+        Player currentPlayer = game4P.firstPlayer();
+        int pawnNumber = currentPlayer.start();
+        currentPlayer.movePawnTo(pawnNumber, -4);
+        currentPlayer.movePawnTo(pawnNumber, 3); // enter in first Finish Home position
+
+        // When
+        final int ILLEGAL_4_POSITION_BEHIND_MOVE_COUNT = -4;
+        Exception exception = Assertions.assertThrows(IllegalPawnMoveException.class, () -> currentPlayer.movePawnTo(pawnNumber, ILLEGAL_4_POSITION_BEHIND_MOVE_COUNT));
+
+        // Then
+        Assertions.assertNotNull(exception);
+        Assertions.assertEquals("Pawn::getTargetHoleAfterMove cannot be called for -4 move count with pawn in finish home", exception.getMessage());
+    }
+
+    @Test
+    void shouldThrowExceptionWhenMovePawnTooFarWithCurrentPlayerPawnInFinishHome() {
+        // Given
+        Player currentPlayer = game4P.firstPlayer();
+        int pawnNumber = currentPlayer.start();
+        currentPlayer.movePawnTo(pawnNumber, -4);
+        currentPlayer.movePawnTo(pawnNumber, 3); // enter in first Finish Home position
+
+        // When
+        final int ILLEGAL_TOO_FAR_MOVE_COUNT = 5;
+        Exception exception = Assertions.assertThrows(IllegalPawnMoveException.class, () -> currentPlayer.movePawnTo(pawnNumber, ILLEGAL_TOO_FAR_MOVE_COUNT));
+
+        // Then
+        Assertions.assertNotNull(exception);
+        Assertions.assertEquals("Pawn::getTargetHoleAfterMove illegal move with pawn in finish home => out of finish home bounds", exception.getMessage());
+    }
+
+    @Test
+    void shouldMovePawnWithCurrentPlayerPawnInFinishHome() {
+        // Given
+        Player currentPlayer = game4P.firstPlayer();
+        int pawnNumber = currentPlayer.start();
+        currentPlayer.movePawnTo(pawnNumber, -4);
+        currentPlayer.movePawnTo(pawnNumber, 3); // enter in first Finish Home position
+
+        // When
+        final int LEGAL_MOVE_COUNT = 3;
+        Hole hole = currentPlayer.movePawnTo(pawnNumber, LEGAL_MOVE_COUNT);
+
+        // Then
+        Assertions.assertEquals(4, hole.getPosition());
+        Assertions.assertEquals(HoleType.HOME_FINISH, hole.getType());
+        Assertions.assertEquals(currentPlayer, hole.getAssociatedPlayer());
     }
 }

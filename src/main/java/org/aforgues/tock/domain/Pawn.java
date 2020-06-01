@@ -112,8 +112,21 @@ public class Pawn {
             Hole targetHole = this.currentHoleOnGameBoard.getGameBoard().getHoleByPosition(targetPosition);
             return targetHole;
         }
+        else if (isInHomeFinish()) {
+            if (moveCount == Card.FOUR.getMoveCount()) {
+                throw new IllegalPawnMoveException("Pawn::getTargetHoleAfterMove cannot be called for -4 move count with pawn in finish home");
+            }
+
+            int currentFinishHomePosition = this.currentHoleOnGameBoard.getPosition();
+            int targetFinishHomePosition = currentFinishHomePosition + moveCount;
+            if (targetFinishHomePosition > 4) {
+                throw new IllegalPawnMoveException("Pawn::getTargetHoleAfterMove illegal move with pawn in finish home => out of finish home bounds");
+            }
+
+            return this.getCurrentHoleOnGameBoard().getGameBoard().getFinishHomeHoleByPlayerAndPosition(this.owner, targetFinishHomePosition);
+        }
         else {
-            throw new IllegalPawnMoveException("Pawn::getTargetHoleAfterMove should be called only with pawn in classic hole => actual : " + this.currentHoleOnGameBoard.getType());
+            throw new IllegalPawnMoveException("Pawn::getTargetHoleAfterMove should be called only with pawn in classic or finish_home hole => actual : " + this.currentHoleOnGameBoard.getType());
         }
     }
 
@@ -226,7 +239,7 @@ public class Pawn {
 
     private void checkHomeFinishMove(Hole targetHole) {
         if (! HoleType.HOME_FINISH.equals(targetHole.getType()))
-            throw new IllegalPawnMoveException("HomeFinish move : Target hole me be a HomeFinish hole type => actual : " + targetHole.getType());
+            throw new IllegalPawnMoveException("HomeFinish move : Target hole must be a HomeFinish hole type => actual : " + targetHole.getType());
     }
 
     private void returnPawnToHome() {
@@ -236,6 +249,9 @@ public class Pawn {
     }
 
     public void switchWithPawnAt(int targetPawnPosition) {
+        if (! this.isInTheGame())
+            throw new IllegalPawnMoveException("Pawn::switchWithPawnAt : current player pawn must be in the game => actual position : " + this.currentHoleOnGameBoard.getType());
+
         Hole targetHole = this.currentHoleOnGameBoard.getGameBoard().getHoleByPosition(targetPawnPosition);
         if (targetHole.isFree())
             throw new IllegalPawnMoveException("Pawn::switchWithPawnAt : no pawn found at target hole position : " + targetPawnPosition);

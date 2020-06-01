@@ -58,10 +58,10 @@ public class GameBoard {
             this.homeHolesByPlayer.put(player, homeHoles);
         }
 
-        homeHoles.add(computeHole(HoleType.HOME_START, 1, player.getFirst(), null));
-        homeHoles.add(computeHole(HoleType.HOME_START, 2, player.getSecond(), null));
-        homeHoles.add(computeHole(HoleType.HOME_START, 3, player.getThird(), null));
-        homeHoles.add(computeHole(HoleType.HOME_START, 4, player.getFourth(), null));
+        homeHoles.add(computeHole(HoleType.HOME_START, 1, player.getFirst(), player));
+        homeHoles.add(computeHole(HoleType.HOME_START, 2, player.getSecond(), player));
+        homeHoles.add(computeHole(HoleType.HOME_START, 3, player.getThird(), player));
+        homeHoles.add(computeHole(HoleType.HOME_START, 4, player.getFourth(), player));
     }
 
     private void addHolesToFinish(Player player) {
@@ -70,10 +70,10 @@ public class GameBoard {
             finishHoles = new ArrayList<>();
             this.finishHolesByPlayer.put(player, finishHoles);
         }
-        finishHoles.add(computeHole(HoleType.HOME_FINISH, 1, null, null));
-        finishHoles.add(computeHole(HoleType.HOME_FINISH, 2, null, null));
-        finishHoles.add(computeHole(HoleType.HOME_FINISH, 3, null, null));
-        finishHoles.add(computeHole(HoleType.HOME_FINISH, 4, null, null));
+        finishHoles.add(computeHole(HoleType.HOME_FINISH, 1, null, player));
+        finishHoles.add(computeHole(HoleType.HOME_FINISH, 2, null, player));
+        finishHoles.add(computeHole(HoleType.HOME_FINISH, 3, null, player));
+        finishHoles.add(computeHole(HoleType.HOME_FINISH, 4, null, player));
     }
 
     private void addHoleToGameBoard(HoleType holeType, Integer position, Player associatedPlayer) {
