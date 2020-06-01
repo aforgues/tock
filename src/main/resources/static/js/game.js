@@ -66,3 +66,26 @@ function onCardSelect() {
         document.getElementById('targetPosition').value = '';
     }
 }
+
+function onCardClick(element, cardValue) {
+    const classValue = 'selectedCard';
+    const formInputId =  'card';
+    if (element.className.endsWith(classValue)) {
+        element.className = element.className.substring(0, element.className.indexOf(classValue)-1);
+        document.getElementById(formInputId).value = '';
+    }
+    else {
+
+        // first unselect other pawn with same classValue
+        let cards = document.getElementsByClassName(classValue);
+        if (cards && cards.length > 0) {
+            for (let i = 0; i < cards.length; i++) {
+                onCardClick(cards[i]);
+            }
+        }
+
+
+        element.className = element.className + " " + classValue;
+        document.getElementById(formInputId).value = cardValue;
+    }
+}
