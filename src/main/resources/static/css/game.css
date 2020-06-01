@@ -1,0 +1,107 @@
+* {
+    box-sizing: border-box;
+}
+
+.row {
+    display: flex;
+}
+
+/* Create two equal columns that sits next to each other */
+.column {
+    padding: 0px;
+}
+
+.left {
+    flex: 60%;
+}
+
+.right {
+    padding: 10px;
+    flex: 40%;
+    background-color: darkgrey;
+}
+
+.form-error {
+    color: red;
+    font-style: italic;
+    font-size: small;
+}
+
+/* Responsive layout - when the screen is less than 1024px wide, make the two columns stack on top of each other instead of next to each other */
+@media screen and (max-width: 1024px) {
+    .left {
+        flex: 100%;
+    }
+
+    .right {
+        flex: 100%;
+    }
+}
+
+.dot-wrapper {
+    width: 36px;
+    height: 36px;
+    background: url(/images/nohole.png) no-repeat 0 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.dot-wrapper .dot {
+    height: 75%;
+    width: 75%;
+}
+.dot {
+    position:relative;
+    width: 23px;
+    height: 23px;
+    background-color: grey;
+    border-radius: 50%;
+    border: 1px solid transparent;
+    display: inline-block;
+}
+.dot.red {
+    background-color: #9c2436;
+}
+.dot.blue {
+    background-color: #1c21f2;
+}
+.dot.yellow {
+    background-color: #fcf853;
+}
+
+.dot.green {
+    background-color: #30663d;
+}
+
+.dot.active {
+    border: 2px solid black;
+}
+
+.dot.targeted {
+    border: 2px solid springgreen;
+}
+
+.dot.stake:after {
+    content: "o";
+    position:absolute;
+    top:auto;
+    left:0;
+    width:100%;
+    text-align: center;
+    line-height: 1.6;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+table {
+    margin: 0;
+    padding: 0;
+    border-spacing: 0;
+}
+tr {
+    line-height: 0;
+}
+td {
+    margin: 0;
+    padding: 0;
+}

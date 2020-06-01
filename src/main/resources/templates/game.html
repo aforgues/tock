@@ -5,114 +5,8 @@
     <title>Tock à 4 joueurs</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        .row {
-            display: flex;
-        }
-
-        /* Create two equal columns that sits next to each other */
-        .column {
-            padding: 0px;
-        }
-
-        .left {
-            flex: 60%;
-        }
-
-        .right {
-            padding: 10px;
-            flex: 40%;
-        }
-
-        .form-error {
-            color: red;
-            font-style: italic;
-            font-size: small;
-        }
-
-        /* Responsive layout - when the screen is less than 1024px wide, make the two columns stack on top of each other instead of next to each other */
-        @media screen and (max-width: 1024px) {
-            .left {
-                flex: 100%;
-            }
-
-            .right {
-                flex: 100%;
-            }
-        }
-
-        .dot-wrapper {
-            width: 36px;
-            height: 36px;
-            background: url(/images/nohole.png) no-repeat 0 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .dot-wrapper .dot {
-            height: 75%;
-            width: 75%;
-        }
-        .dot {
-            position:relative;
-            width: 23px;
-            height: 23px;
-            background-color: grey;
-            border-radius: 50%;
-            border: 1px solid transparent;
-            display: inline-block;
-        }
-        .dot.red {
-            background-color: #9c2436;
-        }
-        .dot.blue {
-            background-color: #1c21f2;
-        }
-        .dot.yellow {
-            background-color: #fcf853;
-        }
-
-        .dot.green {
-            background-color: #30663d;
-        }
-
-        .dot.active {
-            border: 2px solid black;
-        }
-
-        .dot.targeted {
-            border: 2px solid springgreen;
-        }
-
-        .dot.stake:after {
-            content: "o";
-            position:absolute;
-            top:auto;
-            left:0;
-            width:100%;
-            text-align: center;
-            line-height: 1.6;
-            font-size: 16px;
-            font-weight: 600;
-        }
-
-        table {
-            margin: 0;
-            padding: 0;
-            border-spacing: 0;
-        }
-        tr {
-            line-height: 0;
-        }
-        td {
-            margin: 0;
-            padding: 0;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="/css/game.css">
+    <script type="text/javascript" src="/js/game.js"></script>
 </head>
 <body>
     <div class="row">
@@ -138,7 +32,7 @@
                 </tr>
             </table>
         </div>
-        <div class="column right" style="background-color:#bbb;">
+        <div class="column right">
             <h2>Etat de la partie</h2>
             <p>A qui le tour ?
                 <span class="dot-wrapper">
@@ -181,80 +75,7 @@
     </div>
 
     <script type="text/javascript">
-        function onTogglePawn(element, pawnNumber, isPlayable, targetPawnPosition) {
-            if (isPlayable == 'true') {
-                if (element.className.endsWith("active")) {
-                    element.className = element.className.substring(0, element.className.indexOf("active")-1);
-                    document.getElementById('pawnNumber').value = '';
-                }
-                else {
-                    // first unselect other active pawn
-                    let activePawns = document.getElementsByClassName("active");
-                    if (activePawns && activePawns.length > 0) {
-                        for (let i=0; i < activePawns.length; i++) {
-                            onTogglePawn(activePawns[i], pawnNumber, isPlayable, targetPawnPosition);
-                        }
-                    }
-
-                    element.className = element.className + " active";
-                    document.getElementById('pawnNumber').value = pawnNumber;
-                }
-            }
-            else {
-                // Check that a pawn has already been selected to play
-                let activePawns = document.getElementsByClassName("active");
-                if (!activePawns || activePawns.length === 0)
-                    return false;
-
-                // Select targeted pawn in case of JACK card
-                let cardSelected = document.getElementById("card").value;
-                if (cardSelected && cardSelected === "JACK" && targetPawnPosition) {
-                    if (element.className.endsWith("targeted")) {
-                        element.className = element.className.substring(0, element.className.indexOf("targeted")-1);
-                        document.getElementById('targetPosition').value = '';
-                    }
-                    else {
-
-                        // first unselect other targeted pawn
-                        let targetedPawns = document.getElementsByClassName("targeted");
-                        if (targetedPawns && targetedPawns.length > 0) {
-                            for (let i = 0; i < targetedPawns.length; i++) {
-                                onTogglePawn(targetedPawns[i], pawnNumber, isPlayable, targetPawnPosition);
-                            }
-                        }
-
-                        element.className = element.className + " targeted";
-                        document.getElementById('targetPosition').value = targetPawnPosition;
-                    }
-                }
-                else
-                    return false;
-            }
-        }
-
-        function resetFormFields() {
-            // TODO : ne faire ce reinit que pour les vraies erreurs (IllegalPawnMoveException), pas les oublis (champ obligatoires)
-            document.getElementById('card').value='';
-            document.getElementById('pawnNumber').value='';
-            document.getElementById('targetPosition').value='';
-        }
         resetFormFields();
-
-        function onCardSelect() {
-            let selectedCard = document.getElementById('card').value;
-            if (selectedCard !== "JACK") {
-                // first unselect targeted pawn
-                let targetedPawns = document.getElementsByClassName("targeted");
-                if (targetedPawns && targetedPawns.length > 0) {
-                    for (let i = 0; i < targetedPawns.length; i++) {
-                        let element = targetedPawns[i];
-                        element.className = element.className.substring(0, element.className.indexOf("targeted")-1);
-                    }
-                }
-                document.getElementById('targetPosition').value = '';
-            }
-        }
-
         onCardSelect();
     </script>
 </body>
