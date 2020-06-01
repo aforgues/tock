@@ -1,21 +1,6 @@
 function onTogglePawn(element, pawnNumber, isPlayable, targetPawnPosition) {
     if (isPlayable == 'true') {
-        if (element.className.endsWith("active")) {
-            element.className = element.className.substring(0, element.className.indexOf("active")-1);
-            document.getElementById('pawnNumber').value = '';
-        }
-        else {
-            // first unselect other active pawn
-            let activePawns = document.getElementsByClassName("active");
-            if (activePawns && activePawns.length > 0) {
-                for (let i=0; i < activePawns.length; i++) {
-                    onTogglePawn(activePawns[i], pawnNumber, isPlayable, targetPawnPosition);
-                }
-            }
-
-            element.className = element.className + " active";
-            document.getElementById('pawnNumber').value = pawnNumber;
-        }
+        _togglePawn(element, pawnNumber, isPlayable, targetPawnPosition, 'active');
     }
     else {
         // Check that a pawn has already been selected to play
@@ -26,26 +11,37 @@ function onTogglePawn(element, pawnNumber, isPlayable, targetPawnPosition) {
         // Select targeted pawn in case of JACK card
         let cardSelected = document.getElementById("card").value;
         if (cardSelected && cardSelected === "JACK" && targetPawnPosition) {
-            if (element.className.endsWith("targeted")) {
-                element.className = element.className.substring(0, element.className.indexOf("targeted")-1);
-                document.getElementById('targetPosition').value = '';
-            }
-            else {
-
-                // first unselect other targeted pawn
-                let targetedPawns = document.getElementsByClassName("targeted");
-                if (targetedPawns && targetedPawns.length > 0) {
-                    for (let i = 0; i < targetedPawns.length; i++) {
-                        onTogglePawn(targetedPawns[i], pawnNumber, isPlayable, targetPawnPosition);
-                    }
-                }
-
-                element.className = element.className + " targeted";
-                document.getElementById('targetPosition').value = targetPawnPosition;
-            }
+            _togglePawn(element, pawnNumber, isPlayable, targetPawnPosition, 'targeted');
         }
         else
             return false;
+    }
+}
+
+function _togglePawn(element, pawnNumber, isPlayable, targetPawnPosition, classValue) {
+    let formInputId = 'pawnNumber';
+    let formInputValue = pawnNumber;
+    if (classValue === 'targeted') {
+        formInputId = 'targetPosition';
+        formInputValue = targetPawnPosition;
+    }
+
+    if (element.className.endsWith(classValue)) {
+        element.className = element.className.substring(0, element.className.indexOf(classValue)-1);
+        document.getElementById(formInputId).value = '';
+    }
+    else {
+
+        // first unselect other pawn with same classValue
+        let pawns = document.getElementsByClassName(classValue);
+        if (pawns && pawns.length > 0) {
+            for (let i = 0; i < pawns.length; i++) {
+                onTogglePawn(pawns[i], pawnNumber, isPlayable, targetPawnPosition);
+            }
+        }
+
+        element.className = element.className + " " + classValue;
+        document.getElementById(formInputId).value = formInputValue;
     }
 }
 
