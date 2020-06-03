@@ -52,7 +52,7 @@ function resetFormFields() {
     document.getElementById('targetPosition').value='';
 }
 
-function onCardSelect() {
+/*function onCardSelect() {
     let selectedCard = document.getElementById('card').value;
     if (selectedCard !== "JACK") {
         // first unselect targeted pawn
@@ -65,7 +65,7 @@ function onCardSelect() {
         }
         document.getElementById('targetPosition').value = '';
     }
-}
+}*/
 
 function onCardClick(element, cardValue) {
     const classValue = 'selectedCard';

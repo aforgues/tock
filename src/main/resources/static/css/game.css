@@ -12,12 +12,12 @@
 }
 
 .left {
-    flex: 60%;
+    flex: 50%;
 }
 
 .right {
     padding: 10px;
-    flex: 40%;
+    flex: 50%;
     background-color: darkgrey;
 }
 
@@ -91,6 +91,87 @@
     line-height: 1.6;
     font-size: 16px;
     font-weight: 600;
+}
+
+.card {
+    width: 150px;
+    height: 200px;
+    position: relative;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    background-image: url(/images/playingCards.png);
+    background-repeat: no-repeat;
+}
+
+.card.spades {
+    background-position-y: 0px;
+}
+.card.clubs {
+    background-position-y: -200px;
+}
+.card.diamonds {
+    background-position-y: -400px;
+}
+.card.hearts {
+    background-position-y: -600px;
+}
+
+.card.as {
+    background-position-x: 0px;
+}
+.card.two {
+    background-position-x: -150px;
+}
+.card.three {
+    background-position-x: -300px;
+}
+.card.four {
+    background-position-x: -450px;
+}
+.card.five {
+    background-position-x: -600px;
+}
+.card.six {
+    background-position-x: -750px;
+}
+.card.seven {
+    background-position-x: -900px;
+}
+.card.eight {
+    background-position-x: -1050px;
+}
+.card.nine {
+    background-position-x: -1200px;
+}
+.card.ten {
+    background-position-x: -1350px;
+}
+.card.jack {
+    background-position-x: -1500px;
+}
+.card.queen {
+    background-position-x: -1650px;
+}
+.card.king {
+    background-position-x: -1800px;
+}
+
+.card.selectedCard {
+    border: 2px solid springgreen;
+}
+
+input.play {
+    background-color: darkgreen;
+    font-size: xx-large;
+    border-radius: 10px;
+    color: white;
+}
+input.pass {
+    background-color: darkred;
+    font-size: xx-large;
+    border-radius: 10px;
+    color: white;
 }
 
 table {
