@@ -74,7 +74,6 @@ function onCardClick(element, cardValue) {
         document.getElementById(formInputId).value = '';
     }
     else {
-
         // first unselect other pawn with same classValue
         let cards = document.getElementsByClassName(classValue);
         if (cards && cards.length > 0) {
@@ -83,8 +82,25 @@ function onCardClick(element, cardValue) {
             }
         }
 
-
         element.className = element.className + " " + classValue;
         document.getElementById(formInputId).value = cardValue;
+
+        // unselect targetPosition if needed
+        _checkTargetPosition();
+    }
+}
+
+function _checkTargetPosition() {
+    let selectedCard = document.getElementById('card').value;
+    if (selectedCard !== "JACK") {
+        // first unselect targeted pawn
+        let targetedPawns = document.getElementsByClassName("targeted");
+        if (targetedPawns && targetedPawns.length > 0) {
+            for (let i = 0; i < targetedPawns.length; i++) {
+                let element = targetedPawns[i];
+                element.className = element.className.substring(0, element.className.indexOf("targeted") - 1);
+            }
+        }
+        document.getElementById('targetPosition').value = '';
     }
 }
