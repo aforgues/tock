@@ -42,6 +42,13 @@ public class FourPlayerGameBoardCellViewModel {
         return "";
     }
 
+    public String getPawnIdentifier() {
+        if (holePositionCode != null) {
+            return holePawnColor + "-" + holePawnPlayerNumber;
+        }
+        return "";
+    }
+
     public void computeImageCenterNumber(int row, int column) {
         switch (row) {
             case 11:

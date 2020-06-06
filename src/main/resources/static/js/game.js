@@ -45,27 +45,26 @@ function _togglePawn(element, pawnNumber, isPlayable, targetPawnPosition, classV
     }
 }
 
-function resetFormFields() {
-    // TODO : ne faire ce reinit que pour les vraies erreurs (IllegalPawnMoveException), pas les oublis (champ obligatoires)
-    document.getElementById('card').value='';
-    document.getElementById('pawnNumber').value='';
-    document.getElementById('targetPosition').value='';
-}
-
-/*function onCardSelect() {
-    let selectedCard = document.getElementById('card').value;
-    if (selectedCard !== "JACK") {
-        // first unselect targeted pawn
-        let targetedPawns = document.getElementsByClassName("targeted");
-        if (targetedPawns && targetedPawns.length > 0) {
-            for (let i = 0; i < targetedPawns.length; i++) {
-                let element = targetedPawns[i];
-                element.className = element.className.substring(0, element.className.indexOf("targeted")-1);
-            }
-        }
-        document.getElementById('targetPosition').value = '';
+function restorePlayerChoices(currentPlayerPawnColor) {
+    let cardValue = document.getElementById('card').value;
+    if (cardValue) {
+        onCardClick(document.getElementById('card-hearts-' + cardValue.toLowerCase()), cardValue);
     }
-}*/
+
+    let pawnNumberValue = document.getElementById('pawnNumber').value;
+    if (pawnNumberValue) {
+        let sourcePawnElement = document.getElementById(currentPlayerPawnColor + '-' + pawnNumberValue);
+        onTogglePawn(sourcePawnElement, pawnNumberValue, 'true', '');
+    }
+
+    let targetPositionValue = document.getElementById('targetPosition').value;
+    if (targetPositionValue) {
+        let targetPawnElement = document.getElementById(targetPositionValue).firstElementChild;
+        if (targetPawnElement) {
+            onTogglePawn(targetPawnElement, '', 'false', targetPositionValue);
+        }
+    }
+}
 
 function onCardClick(element, cardValue) {
     const classValue = 'selectedCard';
