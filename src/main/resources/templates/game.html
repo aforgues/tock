@@ -67,7 +67,10 @@
                 <p>
                     <input class="play" type="submit" value="Jouer" />
                     &nbsp;&nbsp;
-                    <input class="pass" type="submit" value="Passer" />
+                    <input class="pass"
+                           th:attr="data-passurl=@{/pass?gameId=} + ${gameId}"
+                           th:onclick="document.location.href=this.getAttribute('data-passurl')"
+                           type="button" value="Passer" />
                 </p>
             </form>
 

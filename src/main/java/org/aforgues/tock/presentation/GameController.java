@@ -12,6 +12,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.*;
 
 @Controller
@@ -89,8 +90,15 @@ public class GameController {
         return "redirect:/games/" + gameId;
     }
 
+    @GetMapping("/pass")
+    public String formPass(@NotNull @RequestParam String gameId) {
+        gameService.pass(gameId);
+        return "redirect:/games/" + gameId;
+    }
+
     private void buildModelGameBoard(Model model, Game game) {
         if (game != null) {
+            model.addAttribute("gameId", game.getGameId());
             model.addAttribute("currentPlayerPawnColor", game.getCurrentPlayer().getPawnsColor());
             model.addAttribute("gameBoardRows", buildViewModel(game));
         }
@@ -98,7 +106,6 @@ public class GameController {
 
     private void initModelForms(Model model, String gameId) {
         if (gameId != null) {
-            model.addAttribute("gameId", gameId);
             model.addAttribute("playRequest", new GamePlayRequest(gameId));
         }
     }

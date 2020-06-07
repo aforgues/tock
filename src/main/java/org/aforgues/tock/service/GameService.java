@@ -70,4 +70,9 @@ public class GameService {
         game.nextPlayer();
         return game;
     }
+
+    public void pass(String gameId) {
+        Game game = findByKey(gameId);
+        game.nextPlayer();
+    }
 }
