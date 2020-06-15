@@ -4,13 +4,14 @@ function onTogglePawn(element, pawnNumber, isPlayable, targetPawnPosition) {
     }
     else {
         // Check that a pawn has already been selected to play
-        let activePawns = document.getElementsByClassName("active");
+        const activePawns = document.getElementsByClassName("active");
         if (!activePawns || activePawns.length === 0)
             return false;
 
         // Select targeted pawn in case of JACK card
-        let cardSelected = document.getElementById("card").value;
-        if (cardSelected && cardSelected === "JACK" && targetPawnPosition) {
+        const cardSelected = document.getElementById("cardId").value;
+        const cardValue = cardSelected && cardSelected.split('-')[1];
+        if (cardValue && cardValue === "jack" && targetPawnPosition) {
             _togglePawn(element, pawnNumber, isPlayable, targetPawnPosition, 'targeted');
         }
         else
@@ -33,7 +34,7 @@ function _togglePawn(element, pawnNumber, isPlayable, targetPawnPosition, classV
     else {
 
         // first unselect other pawn with same classValue
-        let pawns = document.getElementsByClassName(classValue);
+        const pawns = document.getElementsByClassName(classValue);
         if (pawns && pawns.length > 0) {
             for (let i = 0; i < pawns.length; i++) {
                 onTogglePawn(pawns[i], pawnNumber, isPlayable, targetPawnPosition);
@@ -46,36 +47,36 @@ function _togglePawn(element, pawnNumber, isPlayable, targetPawnPosition, classV
 }
 
 function restorePlayerChoices(currentPlayerPawnColor) {
-    let cardValue = document.getElementById('card').value;
-    if (cardValue) {
-        onCardClick(document.getElementById('card-hearts-' + cardValue.toLowerCase()), cardValue);
+    const cardId = document.getElementById('cardId').value;
+    if (cardId) {
+        onCardClick(document.getElementById('card-' + cardId), cardId);
     }
 
-    let pawnNumberValue = document.getElementById('pawnNumber').value;
+    const pawnNumberValue = document.getElementById('pawnNumber').value;
     if (pawnNumberValue) {
-        let sourcePawnElement = document.getElementById(currentPlayerPawnColor + '-' + pawnNumberValue);
+        const sourcePawnElement = document.getElementById(currentPlayerPawnColor + '-' + pawnNumberValue);
         onTogglePawn(sourcePawnElement, pawnNumberValue, 'true', '');
     }
 
-    let targetPositionValue = document.getElementById('targetPosition').value;
+    const targetPositionValue = document.getElementById('targetPosition').value;
     if (targetPositionValue) {
-        let targetPawnElement = document.getElementById(targetPositionValue).firstElementChild;
+        const targetPawnElement = document.getElementById(targetPositionValue).firstElementChild;
         if (targetPawnElement) {
             onTogglePawn(targetPawnElement, '', 'false', targetPositionValue);
         }
     }
 }
 
-function onCardClick(element, cardValue) {
+function onCardClick(element, cardId) {
     const classValue = 'selectedCard';
-    const formInputId =  'card';
+    const formInputId =  'cardId';
     if (element.className.endsWith(classValue)) {
         element.className = element.className.substring(0, element.className.indexOf(classValue)-1);
         document.getElementById(formInputId).value = '';
     }
     else {
         // first unselect other pawn with same classValue
-        let cards = document.getElementsByClassName(classValue);
+        const cards = document.getElementsByClassName(classValue);
         if (cards && cards.length > 0) {
             for (let i = 0; i < cards.length; i++) {
                 onCardClick(cards[i]);
@@ -83,7 +84,7 @@ function onCardClick(element, cardValue) {
         }
 
         element.className = element.className + " " + classValue;
-        document.getElementById(formInputId).value = cardValue;
+        document.getElementById(formInputId).value = cardId;
 
         // unselect targetPosition if needed
         _checkTargetPosition();
@@ -91,10 +92,12 @@ function onCardClick(element, cardValue) {
 }
 
 function _checkTargetPosition() {
-    let selectedCard = document.getElementById('card').value;
-    if (selectedCard !== "JACK") {
+    const selectedCard = document.getElementById('cardId').value;
+    const cardValue = selectedCard.split('-')[1];
+
+    if (cardValue !== "jack") {
         // first unselect targeted pawn
-        let targetedPawns = document.getElementsByClassName("targeted");
+        const targetedPawns = document.getElementsByClassName("targeted");
         if (targetedPawns && targetedPawns.length > 0) {
             for (let i = 0; i < targetedPawns.length; i++) {
                 let element = targetedPawns[i];

@@ -6,10 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Collection;
-import java.util.Random;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class Game {
@@ -29,6 +27,8 @@ public class Game {
     @Getter
     private GameBoard gameBoard;
 
+    private CardDeck cardDeck;
+
     public Game(GameType type) {
         this.type = type;
         this.teams = new TreeSet<>();
@@ -46,6 +46,9 @@ public class Game {
         this.currentPlayer = firstPlayer();
 
         this.gameBoard = new GameBoard(teams, this);
+
+        this.cardDeck = new CardDeck();
+        this.cardDeck.distributeToPlayers(this.getAllPlayers());
     }
 
     private void createFourPlayersGame() {
@@ -100,6 +103,13 @@ public class Game {
                 .get();
     }
 
+    private List<Player> getAllPlayers() {
+        return this.teams.stream()
+                .map(team -> team.getPlayers())
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+    }
+
     public Player firstPlayer() {
         return getPlayerByOverallRank(1);
     }
@@ -120,5 +130,17 @@ public class Game {
     public String toString() {
         return "GameType : " + this.getType() + "\n" +
                "GameBoard : " + this.gameBoard;
+    }
+
+    // TODO : move in a card service ?
+    public List<Card> getCurrentPlayerCardHand() {
+        return this.cardDeck.getPlayerCardHand(this.currentPlayer);
+    }
+
+    public Card getCardById(String cardId) {
+        return this.getCurrentPlayerCardHand().stream()
+                .filter(card -> card.getCardId().equals(cardId))
+                .findFirst()
+                .orElse(null);
     }
 }

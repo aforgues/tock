@@ -17,7 +17,7 @@ public class GamePlayRequest implements Serializable {
     private String gameId;
 
     @NotNull (message = "Vous devez choisir une carte")
-    private Card card;
+    private String cardId;
 
     @NotNull (message = "Vous devez sélectionner un pion pour jouer")
     @Min(value = 1, message = "Le numéro de pion doit être 1, 2, 3 ou 4")

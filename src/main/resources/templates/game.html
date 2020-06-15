@@ -44,22 +44,21 @@
                 <input type="hidden" th:field="*{gameId}" />
                 <input type="hidden" th:field="*{pawnNumber}" />
                 <input type="hidden" th:field="*{targetPosition}" />
-                <input type="hidden" th:field="*{card}" />
+                <input type="hidden" th:field="*{cardId}" />
 
                 <p>Déplacez un pion (en le selectionnant directement sur le plateau avec la souris)</p>
                 <p><span th:if="${#fields.hasErrors('pawnNumber')}" class="form-error" th:errors="*{pawnNumber}" /></p>
                 <p><span th:if="${#fields.hasErrors('global')}" class="form-error" th:errors="*{global}" /></p>
                 <p><span th:if="${#fields.hasErrors('targetPosition')}" class="form-error" th:errors="*{targetPosition}" /></p>
-                <p><span th:if="${#fields.hasErrors('card')}" class="form-error" th:errors="*{card}" /></p>
+                <p><span th:if="${#fields.hasErrors('cardId')}" class="form-error" th:errors="*{cardId}" /></p>
 
                 <p>
                     Quelle carte souhaitez-vous jouer ?<br/>
                     <div>
-                        <!--/*@thymesVar id="cardOpt" type="org.aforgues.tock.domain.Card"*/-->
-                        <span th:each="cardOpt : ${T(org.aforgues.tock.domain.Card).values()}"
-                              th:class="'card hearts ' + ${cardOpt.name().toLowerCase()}"
-                              th:id="'card-hearts-' + ${cardOpt.name().toLowerCase()}"
-                              th:attr="data-card=${cardOpt}"
+                        <span th:each="card : ${currentPlayerCardHand}"
+                              th:class="'card ' + ${card.getCardColor().name().toLowerCase()} + ' ' + ${card.getCardValue().name().toLowerCase()}"
+                              th:id="'card-' + ${card.getCardId()}"
+                              th:attr="data-card=${card.getCardId()}"
                               th:onclick="onCardClick(this, this.getAttribute('data-card'))"></span>
                     </div>
                 </p>

@@ -50,20 +50,22 @@ public class GameService {
         return game;
     }
 
-    public Game playCurrentPlayer(String gameId, Card card, Integer pawnNumber, Integer targetPosition) {
+    public Game playCurrentPlayer(String gameId, String cardId, Integer pawnNumber, Integer targetPosition) {
         Game game = findByKey(gameId);
         Player currentPlayer = game.getCurrentPlayer();
+        Card card = game.getCardById(cardId);
+        Card.CardValue cardValue = card.getCardValue();
 
-        if (card.isCanSwitch()) {
+        if (cardValue.isCanSwitch()) {
             currentPlayer.switchPawns(pawnNumber, targetPosition);
         }
-        else if (card.isCanStart() &&
+        else if (cardValue.isCanStart() &&
                 currentPlayer.getPawn(pawnNumber).isAtHome()) {
             currentPlayer.start(pawnNumber);
         }
         else {
             // TODO : check targetPosition match with card moveCount
-            currentPlayer.movePawnTo(pawnNumber, card.getMoveCount());
+            currentPlayer.movePawnTo(pawnNumber, cardValue.getMoveCount());
         }
         // TODO : add canSplit behavior
 

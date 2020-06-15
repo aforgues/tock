@@ -74,12 +74,12 @@ public class GameController {
         }
 
         String gameId = gamePlayRequest.getGameId();
-        Card card = gamePlayRequest.getCard();
+        String cardId = gamePlayRequest.getCardId();
         Integer pawnNumber = gamePlayRequest.getPawnNumber();
         Integer targetPosition = gamePlayRequest.getTargetPosition();
 
         try {
-            gameService.playCurrentPlayer(gameId, card, pawnNumber, targetPosition);
+            gameService.playCurrentPlayer(gameId, cardId, pawnNumber, targetPosition);
         }
         catch (IllegalPawnMoveException e) {
             errors.reject("illegal_pawn_move","Déplacement impossible (" + e.getMessage() + ")");
@@ -101,6 +101,7 @@ public class GameController {
             model.addAttribute("gameId", game.getGameId());
             model.addAttribute("currentPlayerPawnColor", game.getCurrentPlayer().getPawnsColor());
             model.addAttribute("gameBoardRows", buildViewModel(game));
+            model.addAttribute("currentPlayerCardHand", game.getCurrentPlayerCardHand());
         }
     }
 

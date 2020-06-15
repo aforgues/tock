@@ -113,7 +113,7 @@ public class Pawn {
             return targetHole;
         }
         else if (isInHomeFinish()) {
-            if (moveCount == Card.FOUR.getMoveCount()) {
+            if (moveCount == Card.CardValue.FOUR.getMoveCount()) {
                 throw new IllegalPawnMoveException("Pawn::getTargetHoleAfterMove cannot be called for -4 move count with pawn in finish home");
             }
 
