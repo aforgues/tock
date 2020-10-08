@@ -102,6 +102,7 @@ public class GameController {
             model.addAttribute("currentPlayerPawnColor", game.getCurrentPlayer().getPawnsColor());
             model.addAttribute("gameBoardRows", buildViewModel(game));
             model.addAttribute("currentPlayerCardHand", game.getCurrentPlayerCardHand());
+            model.addAttribute("discardPile", game.getDiscardPile());
         }
     }
 

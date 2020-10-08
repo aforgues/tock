@@ -71,6 +71,14 @@
                            th:onclick="document.location.href=this.getAttribute('data-passurl')"
                            type="button" value="Passer" />
                 </p>
+
+                <p th:if="${discardPile.size() > 0}">
+                    Voici les dernières cartes déjà jouées (la défausse)<br/>
+                    <div>
+                        <span th:each="card : ${discardPile}"
+                              th:class="'card ' + ${card.getCardColor().name().toLowerCase()} + ' ' + ${card.getCardValue().name().toLowerCase()}"></span>
+                    </div>
+                </p>
             </form>
 
         </div>

@@ -143,4 +143,12 @@ public class Game {
                 .findFirst()
                 .orElse(null);
     }
+
+    public void transferCardToDiscardPile(Card card, Player currentPlayer) {
+        this.cardDeck.moveCardFromPlayerToDiscardPile(card, currentPlayer);
+    }
+
+    public List<Card> getDiscardPile() {
+        return this.cardDeck.getDiscardPile();
+    }
 }

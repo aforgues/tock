@@ -69,6 +69,9 @@ public class GameService {
         }
         // TODO : add canSplit behavior
 
+        // Transfer card played to the center of the gameboard
+        game.transferCardToDiscardPile(card, currentPlayer);
+
         game.nextPlayer();
         return game;
     }
