@@ -45,9 +45,9 @@ public class Game {
         }
         this.currentPlayer = firstPlayer();
 
+        this.cardDeck = new CardDeck();
         this.gameBoard = new GameBoard(teams, this);
 
-        this.cardDeck = new CardDeck();
         this.cardDeck.distributeToPlayers(this.getAllPlayers());
     }
 
@@ -74,12 +74,19 @@ public class Game {
         int currentPlayerOverallRank = currentPlayer.getOverallRank();
         int nextOverallRank = (currentPlayerOverallRank + 1) > this.getTeams().size()*2 ? 1 : currentPlayerOverallRank + 1;
 
-        return this.teams.stream()
+        Player nextPlayer = this.teams.stream()
                 .map(team -> team.getPlayers())
                 .flatMap(Collection::stream)
                 .filter(player -> player.getOverallRank() == nextOverallRank)
                 .findFirst()
                 .get();
+
+        // TODO : gérer le passage direct au joueur suivant si plus de carte en main
+        /*if (this.cardDeck.getPlayerCardHand(nextPlayer).isEmpty()) {
+            return getNextPlayer(nextPlayer);
+        }*/
+
+        return nextPlayer;
     }
 
     /**
@@ -144,11 +151,18 @@ public class Game {
                 .orElse(null);
     }
 
-    public void transferCardToDiscardPile(Card card, Player currentPlayer) {
-        this.cardDeck.moveCardFromPlayerToDiscardPile(card, currentPlayer);
+    public void currentPlayerTransferCardToDiscardPile(Card card) {
+        this.cardDeck.play(card, this.currentPlayer);
     }
 
     public List<Card> getDiscardPile() {
         return this.cardDeck.getDiscardPile();
+    }
+
+    public void currentPlayerPass() {
+        // TODO : manage specific case of pass related to
+        //  - stake pawn
+        //  - player has a playable card in hand
+        this.cardDeck.pass(this.currentPlayer);
     }
 }

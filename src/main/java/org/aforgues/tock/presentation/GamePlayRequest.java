@@ -6,6 +6,7 @@ import org.aforgues.tock.domain.Card;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
@@ -17,6 +18,7 @@ public class GamePlayRequest implements Serializable {
     private String gameId;
 
     @NotNull (message = "Vous devez choisir une carte")
+    @NotEmpty (message = "Vous devez choisir une carte")
     private String cardId;
 
     @NotNull (message = "Vous devez sélectionner un pion pour jouer")

@@ -70,14 +70,18 @@ public class GameService {
         // TODO : add canSplit behavior
 
         // Transfer card played to the center of the gameboard
-        game.transferCardToDiscardPile(card, currentPlayer);
+        game.currentPlayerTransferCardToDiscardPile(card);
 
         game.nextPlayer();
         return game;
     }
 
-    public void pass(String gameId) {
+    public void passCurrentPlayer(String gameId) {
         Game game = findByKey(gameId);
+
+        // drop all cards in discardPile
+        game.currentPlayerPass();
+
         game.nextPlayer();
     }
 }

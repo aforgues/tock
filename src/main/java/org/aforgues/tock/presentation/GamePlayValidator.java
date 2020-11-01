@@ -14,6 +14,10 @@ public class GamePlayValidator implements ConstraintValidator<GamePlayValidatorC
          return false;
       }
 
+      if (gamePlayRequest.getCardId() == null || gamePlayRequest.getCardId().length()  == 0) {
+         return false;
+      }
+
       if (Card.from(gamePlayRequest.getCardId()).getCardValue() == Card.CardValue.JACK && gamePlayRequest.getTargetPosition() == null) {
          return false;
       }

@@ -12,6 +12,9 @@ public class CardDeck {
     @Getter
     private List<Card> discardPile;
 
+    //TODO : manage 6 player game type distribution
+    private FourPlayerDistributionStage currentDistributionStage = FourPlayerDistributionStage.FIRST;
+
     public CardDeck() {
         this.cards = new ArrayList<>();
         this.distributedCardsByPlayer = new HashMap<>();
@@ -32,9 +35,18 @@ public class CardDeck {
 
         int round = 0;
 
-        for (Card card : this.cards) {
-            distributeCardToPlayer(card, players.get(round++ % nbPlayers));
+        Iterator<Card> cardIterator = this.cards.iterator();
+        while (cardIterator.hasNext()) {
+            distributeCardToPlayer(cardIterator.next(), players.get(round++ % nbPlayers));
+            cardIterator.remove();
+
+            if (round >= this.currentDistributionStage.getNbCardToDistribute() * nbPlayers) {
+                break;
+            }
         }
+
+        // plan next distribution
+        this.currentDistributionStage = currentDistributionStage.next();
     }
 
     private void distributeCardToPlayer(Card card, Player player) {
@@ -50,7 +62,21 @@ public class CardDeck {
         return this.distributedCardsByPlayer.get(player);
     }
 
-    public void moveCardFromPlayerToDiscardPile(Card card, Player player) {
+    public void play(Card card, Player currentPlayer) {
+        this.moveCardFromPlayerToDiscardPile(card, currentPlayer);
+        List<Card> playerCards = getPlayerCardHand(currentPlayer);
+        playerCards.remove(card);
+    }
+
+    public void pass(Player player) {
+        Iterator<Card> cardIterator = distributedCardsByPlayer.get(player).iterator();
+        while (cardIterator.hasNext()) {
+            moveCardFromPlayerToDiscardPile(cardIterator.next(), player);
+            cardIterator.remove();
+        }
+    }
+
+    private void moveCardFromPlayerToDiscardPile(Card card, Player player) {
         if (card == null || player == null) {
             throw new IllegalCardMoveException("Card or player cannot be null");
         }
@@ -62,7 +88,7 @@ public class CardDeck {
 
         // add card on top (at the beginning) of the list
         discardPile.add(0, card);
-        playerCards.remove(card);
     }
+
 
 }

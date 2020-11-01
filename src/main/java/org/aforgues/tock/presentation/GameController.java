@@ -92,7 +92,7 @@ public class GameController {
 
     @GetMapping("/pass")
     public String formPass(@NotNull @RequestParam String gameId) {
-        gameService.pass(gameId);
+        gameService.passCurrentPlayer(gameId);
         return "redirect:/games/" + gameId;
     }
 
