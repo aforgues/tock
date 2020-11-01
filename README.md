@@ -28,3 +28,8 @@
   * permettre de joindre une partie
 * Frontend :
   * Migrer vers Angular ou VueJs afin d'avoir un rafraichissement plus fluide
+* Animations
+  * Changer l'image centrale de Patachou pour :
+    * Pointer du doigt le joueur à qui c'est le tour de jouer
+    * Félicite quand on sort et qu'on rentre dans la maison
+    * Il est triste quand un joueur jette ses cartes (pendant 2 secondes puis pointe vers le joueur suivant)
