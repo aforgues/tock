@@ -240,6 +240,10 @@ public class Pawn {
     private void checkHomeFinishMove(Hole targetHole) {
         if (! HoleType.HOME_FINISH.equals(targetHole.getType()))
             throw new IllegalPawnMoveException("HomeFinish move : Target hole must be a HomeFinish hole type => actual : " + targetHole.getType());
+
+        GameBoard gameBoard = this.currentHoleOnGameBoard.getGameBoard();
+        if (! gameBoard.getFinishHomeHoleByPlayerAndPosition(this.owner, targetHole.getPosition()).isFree())
+            throw new IllegalPawnMoveException("FinishHome hole with following position is already filled : " + targetHole.getPosition());
     }
 
     private void returnPawnToHome() {

@@ -401,4 +401,26 @@ public class GameIntegrationTest {
         Assertions.assertEquals(HoleType.HOME_FINISH, hole.getType());
         Assertions.assertEquals(currentPlayer, hole.getAssociatedPlayer());
     }
+
+    @Test
+    void shouldThrowExceptionWhenPawnInFinishHomeTryToEatAnotherOne() {
+        // Given
+        Player currentPlayer = game4P.firstPlayer();
+        int pawnNumber = currentPlayer.start();
+        currentPlayer.movePawnTo(pawnNumber, -4);
+        currentPlayer.movePawnTo(pawnNumber, 5); // enter in third Finish Home position
+
+        int secondPawnNumber = currentPlayer.start();
+        currentPlayer.movePawnTo(secondPawnNumber, -4);
+        currentPlayer.movePawnTo(secondPawnNumber, 3); // enter in first Finish Home position
+
+        // When
+        Exception exception = Assertions.assertThrows(IllegalPawnMoveException.class, () -> currentPlayer.movePawnTo(secondPawnNumber, 2));
+
+        // Then
+        final int ILLEGAL_EAT_IN_FINISH_HOME_POSITION = 3;
+        Assertions.assertNotNull(exception);
+        Assertions.assertEquals("FinishHome hole with following position is already filled : " + ILLEGAL_EAT_IN_FINISH_HOME_POSITION, exception.getMessage());
+    }
+
 }
