@@ -147,4 +147,30 @@ public class Player implements Comparable<Player> {
     public boolean isCurrentPlayer() {
         return this.team.getOngoingGame().getCurrentPlayer().equals(this);
     }
+
+    public boolean canPlay() {
+        // for each pawn if the player can move it with his current hand
+        List<Card> cardsInHand = this.team.getOngoingGame().getCurrentPlayerCardHand();
+
+        for (int pawnNumber = 1; pawnNumber <= 4; pawnNumber++) {
+            Pawn pawn = this.getPawn(pawnNumber);
+
+            if (pawn.isPlayable()) {
+                if (pawn.isAtHome()
+                        && cardsInHand.stream()
+                                    .map(card -> card.getCardValue())
+                                    .anyMatch(cardValue -> cardValue == Card.CardValue.AS || cardValue == Card.CardValue.KING)) {
+                    log.info("Trying to pass, but current player has AS or King card while having pawns at home !");
+
+                    //TODO : check that starting hole is free or with a pawn of another player
+                    return true;
+                }
+
+                // TODO : check that a pawn which is not at home can play (not blocked by any other pawn
+                // TODO : check that a pawn which is in the finish home can go to the end
+            }
+        }
+
+        return false;
+    }
 }

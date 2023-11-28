@@ -38,7 +38,6 @@ public class GameController {
     public String details(@PathVariable String id, Model model) {
         Game game = gameService.findByKey(id);
         buildModelGameBoard(model, game);
-        initModelForms(model, id);
         return "game";
     }
 
@@ -90,9 +89,24 @@ public class GameController {
         return "redirect:/games/" + gameId;
     }
 
-    @GetMapping("/pass")
-    public String formPass(@NotNull @RequestParam String gameId) {
-        gameService.passCurrentPlayer(gameId);
+    @PostMapping("/pass")
+    public String formPass(@Valid @ModelAttribute ("passRequest") GamePassRequest gamePassRequest,
+                           BindingResult errors, Model model) {
+        String gameId = gamePassRequest.getGameId();
+        if (errors.hasErrors()) {
+            buildModelGameBoard(model, gameService.findByKey(gameId));
+            return "game";
+        }
+
+        try {
+            gameService.passCurrentPlayer(gameId);
+        }
+        catch (IllegalCardMoveException e) {
+            errors.reject("illegal_card_move","Impossible de passer (" + e.getMessage() + ")");
+            log.warn("Illegal Card Move : " + e.getMessage());
+            buildModelGameBoard(model, gameService.findByKey(gameId));
+            return "game";
+        }
         return "redirect:/games/" + gameId;
     }
 
@@ -103,12 +117,14 @@ public class GameController {
             model.addAttribute("gameBoardRows", buildViewModel(game));
             model.addAttribute("currentPlayerCardHand", game.getCurrentPlayerCardHand());
             model.addAttribute("discardPile", game.getDiscardPile());
-        }
-    }
 
-    private void initModelForms(Model model, String gameId) {
-        if (gameId != null) {
-            model.addAttribute("playRequest", new GamePlayRequest(gameId));
+            // Init forms
+            if (model.getAttribute("playRequest") == null) {
+                model.addAttribute("playRequest", new GamePlayRequest(game.getGameId()));
+            }
+            if (model.getAttribute("passRequest") == null) {
+                model.addAttribute("passRequest", new GamePassRequest(game.getGameId()));
+            }
         }
     }
 

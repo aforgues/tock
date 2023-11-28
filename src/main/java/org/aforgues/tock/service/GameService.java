@@ -1,9 +1,6 @@
 package org.aforgues.tock.service;
 
-import org.aforgues.tock.domain.Card;
-import org.aforgues.tock.domain.Game;
-import org.aforgues.tock.domain.GameType;
-import org.aforgues.tock.domain.Player;
+import org.aforgues.tock.domain.*;
 import org.aforgues.tock.repository.GameRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -78,6 +75,11 @@ public class GameService {
 
     public void passCurrentPlayer(String gameId) {
         Game game = findByKey(gameId);
+
+        Player currentPlayer = game.getCurrentPlayer();
+        if (currentPlayer.canPlay()) {
+            throw new IllegalCardMoveException("The current player cannot pass his turn, as he can play !");
+        }
 
         // drop all cards in discardPile
         game.currentPlayerPass();

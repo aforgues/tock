@@ -65,21 +65,26 @@
 
                 <p>
                     <input class="play" type="submit" value="Jouer" />
-                    &nbsp;&nbsp;
-                    <input class="pass"
-                           th:attr="data-passurl=@{/pass?gameId=} + ${gameId}"
-                           th:onclick="document.location.href=this.getAttribute('data-passurl')"
-                           type="button" value="Passer" />
-                </p>
-
-                <p th:if="${discardPile.size() > 0}">
-                    Voici les dernières cartes déjà jouées (la défausse)<br/>
-                    <div>
-                        <span th:each="card : ${discardPile}"
-                              th:class="'card ' + ${card.getCardColor().name().toLowerCase()} + ' ' + ${card.getCardValue().name().toLowerCase()}"></span>
-                    </div>
                 </p>
             </form>
+
+            <form action="#" th:action="@{/pass}" th:object="${passRequest}" method="post">
+                <input type="hidden" th:field="*{gameId}" />
+                <p>
+                    <input class="pass" type="submit" value="Passer" />
+                </p>
+                <p><span th:if="${#fields.hasErrors()}" class="form-error" th:errors="*" /></p>
+            </form>
+
+            <h2 th:if="${discardPile.size() > 0}">La défausse</h2>
+            <p th:if="${discardPile.size() > 0}">
+                Voici les dernières cartes déjà jouées<br/>
+            </p>
+            <div>
+                <span th:each="card : ${discardPile}"
+                      th:class="'card ' + ${card.getCardColor().name().toLowerCase()} + ' ' + ${card.getCardValue().name().toLowerCase()}"></span>
+            </div>
+            </p>
 
         </div>
     </div>
